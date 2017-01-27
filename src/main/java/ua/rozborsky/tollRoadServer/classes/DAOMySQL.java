@@ -23,9 +23,12 @@ public class DAOMySQL implements DAO {
         String sql = "SELECT * FROM drivers WHERE id_driver=" + id;
         try(Connection con = sql2o.open()) {
             List<Driver> drivers =  con.createQuery(sql).executeAndFetch(Driver.class);
-            System.out.println(drivers.size());
+            if (drivers.size() != 0){
 
+                return drivers.get(0).isActive();
+            }
+
+            return false;
         }
-        return false;
     }
 }
