@@ -43,20 +43,29 @@ public class DAOMySQL implements DAO {
         return this.driver;
     }
 
-
     public boolean isActive() {
         return driver.isActive() == true;
     }
 
     @Override
     public void addDriverInChain() {
-        String insertSql =
-                "INSERT into drivers_on_roads (iddrivers_on_roads) VALUES (:id)";
+        String insertSql = "INSERT into drivers_on_roads (iddrivers_on_roads) VALUES (:id)";
 
         try (Connection con = sql2o.open()) {
             con.createQuery(insertSql)
-                .addParameter("id", driver.getId_driver())
-                .executeUpdate();
+                    .addParameter("id", driver.getId_driver())
+                    .executeUpdate();
+        }
+    }
+
+    @Override
+    public void removeDriverFromChain(int id) {
+        String deleteSql = "DELETE FROM drivers_on_roads WHERE id = :id;";
+
+        try(Connection con = sql2o.open()) {
+            con.createQuery(deleteSql)
+                    .addParameter("id", id)
+                    .executeUpdate();
         }
     }
 }

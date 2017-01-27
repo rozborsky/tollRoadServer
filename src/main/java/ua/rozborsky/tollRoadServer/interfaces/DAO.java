@@ -13,4 +13,6 @@ public interface DAO {
     void addDriverInChain();
 
     boolean isActive();
+
+    void removeDriverFromChain(int id);
 }
