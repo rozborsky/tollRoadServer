@@ -9,3 +9,7 @@ CREATE TABLE `toll_road`.`drivers` (
   `e_mail` VARCHAR(45) NOT NULL,
   `active` TINYINT(1) NOT NULL,
   PRIMARY KEY (`id_driver`))
+
+CREATE TABLE `toll_road`.`drivers_on_roads` (
+  `iddrivers_on_roads` INT NOT NULL,
+  PRIMARY KEY (`iddrivers_on_roads`));

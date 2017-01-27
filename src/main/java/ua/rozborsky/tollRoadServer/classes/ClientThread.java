@@ -12,6 +12,7 @@ import java.net.Socket;
  */
 public class ClientThread extends Thread {
     private Socket socket;
+    private boolean canRide = false;
 
     public ClientThread(Socket socket) {
         this.socket = socket;
@@ -23,11 +24,18 @@ public class ClientThread extends Thread {
             String id = in.readLine();
 
             ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("spring/applicationConfig.xml");
-            DAO socketManager = (DAO) context.getBean("daoMySQL");
-            boolean isActive = socketManager.isRegisteredUser(Integer.valueOf(id));
+            DAO dao = (DAO) context.getBean("daoMySQL");
+
+            if (dao.isRegistered(Integer.valueOf(id))){
+                Driver driver = dao.driver();
+                if(dao.isActive()) {
+                    dao.addDriverInChain();
+                    canRide = true;
+                }
+            }
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(isActive);
+            out.println(canRide);
         } catch (IOException e) {
             e.printStackTrace();
         }
