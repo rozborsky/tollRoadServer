@@ -11,8 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("spring/applicationConfig.xml");
-
         SocketManager socketManager = (SocketManager) context.getBean("socketManager");
-       socketManager.connect();
+        socketManager.start();
     }
 }

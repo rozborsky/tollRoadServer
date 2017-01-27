@@ -11,22 +11,18 @@ import java.net.Socket;
  */
 @Service("socketManager")
 public class SocketManager {
-    static final int PORT = 4444;
+    private static final int PORT = 4444;
 
-    public void connect() {
-        Socket socket = null;
-        ServerSocket serverSocket = null;
-
-        try {
-            serverSocket = new ServerSocket(PORT);
+    public void start() {
+        try(ServerSocket serverSocket = new ServerSocket(PORT)) {
 
             while (true) {
-                System.out.println("wait for client");
-                socket = serverSocket.accept();
+                Socket socket = serverSocket.accept();
                 new ClientThread(socket).start();
             }
         } catch (IOException e) {
-            e.printStackTrace();//todo------------------
+            //todo lo4J-----------------------------
+            e.printStackTrace();
         }
     }
 }

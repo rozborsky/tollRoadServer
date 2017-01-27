@@ -1,0 +1,11 @@
+MySQL
+
+CREATE SCHEMA `toll_road`
+
+CREATE TABLE `toll_road`.`drivers` (
+  `id_driver` INT NOT NULL,
+  `name` VARCHAR(20) NOT NULL,
+  `surname` VARCHAR(20) NOT NULL,
+  `e_mail` VARCHAR(45) NOT NULL,
+  `active` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`id_driver`))

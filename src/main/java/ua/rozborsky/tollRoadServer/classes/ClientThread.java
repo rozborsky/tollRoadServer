@@ -1,5 +1,7 @@
 package ua.rozborsky.tollRoadServer.classes;
 
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ua.rozborsky.tollRoadServer.interfaces.DAO;
 
 import java.io.*;
@@ -9,44 +11,26 @@ import java.net.Socket;
  * Created by roman on 22.01.2017.
  */
 public class ClientThread extends Thread {
-        private Socket socket;
-        public ClientThread(Socket clientSocket) {
-            this.socket = clientSocket;
-        }
+    private Socket socket;
 
-    public void run() {
-        BufferedReader bufferedReader = null;
-
-        try {
-            InputStream inputStream = socket.getInputStream();
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String line = bufferedReader.readLine();
-            System.out.println(line);
-
-        } catch (IOException e) {
-            e.printStackTrace();//todo---------------------------------------------
-            return;
-        }
-
-        sendResult();
+    public ClientThread(Socket socket) {
+        this.socket = socket;
     }
 
-    private void sendResult() {
-        OutputStream out = null;
+    public void run() {
         try {
-            out = socket.getOutputStream();
-        } catch (IOException e) {
-            e.printStackTrace();//todo---------------------------------------------
-        }
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
-        DAO dao = new DAOMySQL();
-        dao.createConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String id = in.readLine();
 
-        try {
-            writer.write(dao.isRegisteredUser() + "\n");
-            writer.flush();
+            ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("spring/applicationConfig.xml");
+            DAO socketManager = (DAO) context.getBean("daoMySQL");
+            boolean isActive = socketManager.isRegisteredUser(Integer.valueOf(id));
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(isActive);
         } catch (IOException e) {
-            e.printStackTrace();//todo---------------------------------------------
+            e.printStackTrace();
         }
     }
 }
+
