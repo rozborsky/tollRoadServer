@@ -1,5 +1,6 @@
 package ua.rozborsky.tollRoadServer.classes;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.net.Socket;
  */
 @Service("socketManager")
 public class SocketManager {
+    private static final Logger log = Logger.getLogger(SocketManager.class);
 
     public void start() {
         try(ServerSocket serverSocket = new ServerSocket(Properties.port())) {
@@ -20,8 +22,7 @@ public class SocketManager {
                 new ClientThread(socket).start();
             }
         } catch (IOException e) {
-            //todo lo4J-----------------------------
-            e.printStackTrace();
+            log.error(e);
         }
     }
 }

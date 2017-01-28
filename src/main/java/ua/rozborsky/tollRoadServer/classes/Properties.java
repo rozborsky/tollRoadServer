@@ -1,5 +1,7 @@
 package ua.rozborsky.tollRoadServer.classes;
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -8,6 +10,7 @@ import java.io.InputStream;
  */
 public class Properties {
     private static java.util.Properties propertie;
+    private static final Logger log = Logger.getLogger(Properties.class);
 
     static {
         String resourceName = "myconf.properties";
@@ -16,7 +19,7 @@ public class Properties {
         try(InputStream resourceStream = loader.getResourceAsStream(resourceName)) {
             propertie.load(resourceStream);
         }catch (IOException e){
-            //todo log4j----------------
+            log.error(e);
         }
     }
 

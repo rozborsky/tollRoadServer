@@ -3,6 +3,7 @@ package ua.rozborsky.tollRoadServer.classes;
 import org.springframework.stereotype.Service;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
+import org.sql2o.Sql2oException;
 import ua.rozborsky.tollRoadServer.interfaces.DAO;
 
 import java.util.List;
@@ -21,11 +22,11 @@ public class DAOMySQL implements DAO {
 
 
     @Override
-    public boolean isRegistered(int id) {
+    public boolean isRegistered(int id) throws Sql2oException{
         String sql = "SELECT * FROM drivers WHERE id_driver=" + id;
         try(Connection con = sql2o.open()) {
-            List<Driver> drivers =  con.createQuery(sql).executeAndFetch(Driver.class);
-            if(drivers.size() != 0) {
+            List<Driver> drivers = con.createQuery(sql).executeAndFetch(Driver.class);
+            if (drivers.size() != 0) {
                 driver = drivers.get(0);
 
                 return true;
@@ -41,7 +42,7 @@ public class DAOMySQL implements DAO {
 
 
     @Override
-    public void addDriverInChain() {
+    public void addDriverInChain()  throws Sql2oException{
         String insertSql = "INSERT into drivers_on_roads (iddrivers_on_roads) VALUES (:id)";
         try (Connection con = sql2o.open()) {
             con.createQuery(insertSql)
@@ -51,7 +52,7 @@ public class DAOMySQL implements DAO {
     }
 
     @Override
-    public void removeDriverFromChain(int id) {
+    public void removeDriverFromChain(int id)  throws Sql2oException{
         String deleteSql = "DELETE FROM drivers_on_roads WHERE iddrivers_on_roads = :id;";
 
         try(Connection con = sql2o.open()) {
@@ -62,7 +63,7 @@ public class DAOMySQL implements DAO {
     }
 
     @Override
-    public boolean isInChain(int id) {
+    public boolean isInChain(int id)  throws Sql2oException{
         String sql = "SELECT * FROM drivers_on_roads WHERE iddrivers_on_roads = :id;";
 
         try (Connection con = sql2o.open()) {

@@ -1,7 +1,9 @@
 package ua.rozborsky.tollRoadServer.classes;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.sql2o.Sql2oException;
 import ua.rozborsky.tollRoadServer.interfaces.DAO;
 
 import java.io.*;
@@ -11,6 +13,7 @@ import java.net.Socket;
  * Created by roman on 22.01.2017.
  */
 public class ClientThread extends Thread {
+    private static final Logger log = Logger.getLogger(ClientThread.class);
     private Socket socket;
     private boolean canRide = false;
 
@@ -40,8 +43,8 @@ public class ClientThread extends Thread {
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(canRide);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | Sql2oException e) {
+            log.error(e);
         }
     }
 }
