@@ -11,10 +11,9 @@ import java.net.Socket;
  */
 @Service("socketManager")
 public class SocketManager {
-    private static final int PORT = 4444;
 
     public void start() {
-        try(ServerSocket serverSocket = new ServerSocket(PORT)) {
+        try(ServerSocket serverSocket = new ServerSocket(Properties.port())) {
 
             while (true) {
                 Socket socket = serverSocket.accept();

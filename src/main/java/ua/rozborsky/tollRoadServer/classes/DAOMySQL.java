@@ -14,11 +14,9 @@ import java.util.List;
 public class DAOMySQL implements DAO {
     private static Sql2o sql2o;
     private Driver driver;
-    public boolean isRegistered = false;
 
     static{
-        sql2o = new Sql2o("jdbc:mysql://localhost:3306/toll_road?useUnicode=true&useJDBCCompliantTimezoneShift=true" +
-                "&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "password");
+        sql2o = new Sql2o(Properties.url(), Properties.user(), Properties.password());
     }
 
 
@@ -27,13 +25,11 @@ public class DAOMySQL implements DAO {
         String sql = "SELECT * FROM drivers WHERE id_driver=" + id;
         try(Connection con = sql2o.open()) {
             List<Driver> drivers =  con.createQuery(sql).executeAndFetch(Driver.class);
-            if (drivers.size() != 0){
-                this.isRegistered = true;
-                this.driver = drivers.get(0);
+            if(drivers.size() != 0) {
+                driver = drivers.get(0);
 
-                return drivers.get(0).isActive();
+                return true;
             }
-
             return false;
         }
     }
@@ -43,14 +39,10 @@ public class DAOMySQL implements DAO {
         return this.driver;
     }
 
-    public boolean isActive() {
-        return driver.isActive() == true;
-    }
 
     @Override
     public void addDriverInChain() {
         String insertSql = "INSERT into drivers_on_roads (iddrivers_on_roads) VALUES (:id)";
-
         try (Connection con = sql2o.open()) {
             con.createQuery(insertSql)
                     .addParameter("id", driver.getId_driver())
@@ -60,12 +52,25 @@ public class DAOMySQL implements DAO {
 
     @Override
     public void removeDriverFromChain(int id) {
-        String deleteSql = "DELETE FROM drivers_on_roads WHERE id = :id;";
+        String deleteSql = "DELETE FROM drivers_on_roads WHERE iddrivers_on_roads = :id;";
 
         try(Connection con = sql2o.open()) {
             con.createQuery(deleteSql)
                     .addParameter("id", id)
                     .executeUpdate();
+        }
+    }
+
+    @Override
+    public boolean isInChain(int id) {
+        String sql = "SELECT * FROM drivers_on_roads WHERE iddrivers_on_roads = :id;";
+
+        try (Connection con = sql2o.open()) {
+            List<Integer> idDriver =  con.createQuery(sql)
+                    .addParameter("id", id)
+                    .executeScalarList(Integer.class);
+
+            return idDriver.size() != 0;
         }
     }
 }

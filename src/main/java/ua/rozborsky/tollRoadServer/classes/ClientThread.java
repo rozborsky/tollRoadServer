@@ -21,16 +21,20 @@ public class ClientThread extends Thread {
     public void run() {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String id = in.readLine();
+            int id = Integer.valueOf(in.readLine());
 
             ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("spring/applicationConfig.xml");
             DAO dao = (DAO) context.getBean("daoMySQL");
 
-            if (dao.isRegistered(Integer.valueOf(id))){
+            if (dao.isRegistered(id)){
                 Driver driver = dao.driver();
-                if(dao.isActive()) {
-                    dao.addDriverInChain();
-                    canRide = true;
+                if(driver.isActive()){
+                    if (dao.isInChain(id)) {
+                        //todo вивести повідомлення що водій вже в мережі
+                    } else {
+                        dao.addDriverInChain();
+                        canRide = true;
+                    }
                 }
             }
 
