@@ -38,7 +38,4 @@ public class Properties {
     public static String password() {
         return propertie.getProperty("password");
     }
-
-
-
 }

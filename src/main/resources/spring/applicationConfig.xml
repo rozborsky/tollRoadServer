@@ -10,5 +10,5 @@
 
     <context:annotation-config/>
 
-    <context:component-scan base-package="ua.rozborsky.tollRoadServer.classes" />
+    <context:component-scan base-package="ua.rozborsky" />
 </beans>

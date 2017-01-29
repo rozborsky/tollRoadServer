@@ -5,6 +5,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.sql2o.Sql2oException;
 import ua.rozborsky.tollRoadServer.interfaces.DAO;
+import ua.rozborsky.transmittedObjects.RequestFromClient;
 
 import java.io.*;
 import java.net.Socket;
@@ -23,16 +24,18 @@ public class ClientThread extends Thread {
 
     public void run() {
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            int id = Integer.valueOf(in.readLine());
+            ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
+            RequestFromClient requestFromClient = (RequestFromClient)inStream.readObject();
+            System.out.println(requestFromClient.id());
+            System.out.println(requestFromClient.client());
 
             ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("spring/applicationConfig.xml");
             DAO dao = (DAO) context.getBean("daoMySQL");
 
-            if (dao.isRegistered(id)){
+            if (dao.isRegistered(requestFromClient.id())){
                 Driver driver = dao.driver();
                 if(driver.isActive()){
-                    if (dao.isInChain(id)) {
+                    if (dao.isInChain(requestFromClient.id())) {
                         //todo вивести повідомлення що водій вже в мережі
                     } else {
                         dao.addDriverInChain();
@@ -44,7 +47,9 @@ public class ClientThread extends Thread {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(canRide);
         } catch (IOException | Sql2oException e) {
-            log.error(e);
+            log.error(e);//todo if throw this exception - client dosn't work
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }
