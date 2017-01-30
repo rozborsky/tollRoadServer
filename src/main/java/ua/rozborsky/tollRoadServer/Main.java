@@ -2,6 +2,7 @@ package ua.rozborsky.tollRoadServer;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ua.rozborsky.tollRoadServer.classes.SendEmail;
 import ua.rozborsky.tollRoadServer.classes.SocketManager;
 
 /**

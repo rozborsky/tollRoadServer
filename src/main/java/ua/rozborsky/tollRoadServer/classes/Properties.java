@@ -55,7 +55,23 @@ public class Properties {
         return propertie.getProperty("password");
     }
 
+    public static String address() {
+        return propertie.getProperty("address");
+    }
+
+    public static String passwordEmail() {
+        return propertie.getProperty("passwordEmail");
+    }
+
     public static String notInChain() {
         return propertie.getProperty("notInChain");
+    }
+
+    public static String subject() {
+        return propertie.getProperty("subject");
+    }
+
+    public static String eMailMessage() {
+        return propertie.getProperty("eMailMessage");
     }
 }
