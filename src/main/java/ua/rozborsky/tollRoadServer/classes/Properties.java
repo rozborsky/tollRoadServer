@@ -35,6 +35,22 @@ public class Properties {
         return propertie.getProperty("user");
     }
 
+    public static String notRegistered() {
+        return propertie.getProperty("notRegistered");
+    }
+
+    public static String blocked() {
+        return propertie.getProperty("blocked");
+    }
+
+    public static String inChain() {
+        return propertie.getProperty("inChain");
+    }
+
+    public static String ok() {
+        return propertie.getProperty("ok");
+    }
+
     public static String password() {
         return propertie.getProperty("password");
     }

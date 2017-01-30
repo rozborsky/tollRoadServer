@@ -5,6 +5,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.sql2o.Sql2oException;
 import ua.rozborsky.tollRoadServer.interfaces.DAO;
+import ua.rozborsky.transmittedObjects.AnswerFromServer;
 import ua.rozborsky.transmittedObjects.RequestFromClient;
 
 import java.io.*;
@@ -26,26 +27,33 @@ public class ClientThread extends Thread {
         try {
             ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
             RequestFromClient requestFromClient = (RequestFromClient)inStream.readObject();
-            System.out.println(requestFromClient.id());
-            System.out.println(requestFromClient.client());
 
             ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("spring/applicationConfig.xml");
             DAO dao = (DAO) context.getBean("daoMySQL");
 
-            if (dao.isRegistered(requestFromClient.id())){
+            String message = Properties.notRegistered();
+
+            if (dao.isRegistered(requestFromClient.id())){//todo refactor method
+                message = Properties.blocked();
+
                 Driver driver = dao.driver();
                 if(driver.isActive()){
-                    if (dao.isInChain(requestFromClient.id())) {
-                        //todo вивести повідомлення що водій вже в мережі
-                    } else {
+                    message = Properties.inChain();
+
+                    if (!dao.isInChain(requestFromClient.id())) {
                         dao.addDriverInChain();
                         canRide = true;
+                        message = Properties.ok();
                     }
                 }
             }
+            AnswerFromServer answerFromServer = (AnswerFromServer) context.getBean("answerFromServer");
+            answerFromServer.setMessage(message);
+            answerFromServer.setCanRide(canRide);
 
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(canRide);
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            out.writeObject(answerFromServer);
+            out.flush();
         } catch (IOException | Sql2oException e) {
             log.error(e);//todo if throw this exception - client dosn't work
         } catch (ClassNotFoundException e) {
