@@ -42,11 +42,12 @@ public class DAOMySQL implements DAO {
 
 
     @Override
-    public void addDriverInChain()  throws Sql2oException{
-        String insertSql = "INSERT into drivers_on_roads (iddrivers_on_roads) VALUES (:id)";
+    public void addDriverInChain(int entranceCheckPoint)  throws Sql2oException{
+        String insertSql = "INSERT INTO drivers_on_roads (iddrivers_on_roads, entranceCheckPoint) VALUES (:id, :entranceCheckPoint)";
         try (Connection con = sql2o.open()) {
             con.createQuery(insertSql)
                     .addParameter("id", driver.getId_driver())
+                    .addParameter("entranceCheckPoint", entranceCheckPoint)
                     .executeUpdate();
         }
     }

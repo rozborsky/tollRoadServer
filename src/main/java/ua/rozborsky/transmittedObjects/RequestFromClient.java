@@ -9,20 +9,25 @@ import java.io.Serializable;
  */
 @Service("requestFromClient")
 public class RequestFromClient implements Serializable {
-
+    private int checkPoint;
     private Client client;
     private int id;
 
-    public void setValues(Client clt, int id){
+    public void setValues(int cpt, Client clt, int id){
+        this.checkPoint = cpt;
         this.client = clt;
         this.id = id;
     }
 
-  public Client client(){
-      return client;
-  }
+    public Client client(){
+        return client;
+    }
 
     public int id() {
         return id;
+    }
+
+    public int checkPoint() {
+        return checkPoint;
     }
 }

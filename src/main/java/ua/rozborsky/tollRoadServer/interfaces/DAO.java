@@ -10,7 +10,7 @@ public interface DAO {
 
     Driver driver();
 
-    void addDriverInChain();
+    void addDriverInChain(int entranceCheckPoint);
 
     void removeDriverFromChain(int id);
 

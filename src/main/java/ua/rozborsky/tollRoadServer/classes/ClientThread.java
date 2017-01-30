@@ -42,7 +42,6 @@ public class ClientThread extends Thread {
     private AnswerFromServer checkId(RequestFromClient requestFromClient) {
         ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("spring/applicationConfig.xml");
         DAO dao = (DAO) context.getBean("daoMySQL");
-
         String message = Properties.notRegistered();
 
         if (dao.isRegistered(requestFromClient.id())){
@@ -53,7 +52,7 @@ public class ClientThread extends Thread {
                 if (requestFromClient.client().equals(Client.entrance)){//todo too big method
                     message = Properties.inChain();
                     if (!dao.isInChain(requestFromClient.id())) {
-                        dao.addDriverInChain();
+                        dao.addDriverInChain(requestFromClient.checkPoint());
                         canRide = true;
                         message = Properties.ok();
                     }
@@ -65,6 +64,7 @@ public class ClientThread extends Thread {
                         message = Properties.ok();
 
                         SendEmail sendEmail = new SendEmail("roman.rozborsky@gmail.com");
+                        //SendEmail sendEmail = new SendEmail(driver.getE_mail());
                         sendEmail.send();
                     }
                 }

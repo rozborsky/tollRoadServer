@@ -12,4 +12,7 @@ CREATE TABLE `toll_road`.`drivers` (
 
 CREATE TABLE `toll_road`.`drivers_on_roads` (
   `iddrivers_on_roads` INT NOT NULL,
+  `entranceCheckPoint` INT(2) NOT NULL,
   PRIMARY KEY (`iddrivers_on_roads`));
+
+
