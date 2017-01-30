@@ -25,8 +25,6 @@ public class ClientThread extends Thread {
     }
 
     public void run() {
-        SendEmail sendEmail = new SendEmail("roman.rozborsky@gmail.com");
-        sendEmail.send();
         try {
             ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
             RequestFromClient requestFromClient = (RequestFromClient)inStream.readObject();
@@ -65,6 +63,9 @@ public class ClientThread extends Thread {
                         dao.removeDriverFromChain(requestFromClient.id());
                         canRide = true;
                         message = Properties.ok();
+
+                        SendEmail sendEmail = new SendEmail("roman.rozborsky@gmail.com");
+                        sendEmail.send();
                     }
                 }
             }
