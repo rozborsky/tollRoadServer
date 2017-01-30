@@ -54,4 +54,8 @@ public class Properties {
     public static String password() {
         return propertie.getProperty("password");
     }
+
+    public static String notInChain() {
+        return propertie.getProperty("notInChain");
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.sql2o.Sql2oException;
 import ua.rozborsky.tollRoadServer.interfaces.DAO;
 import ua.rozborsky.transmittedObjects.AnswerFromServer;
+import ua.rozborsky.transmittedObjects.Client;
 import ua.rozborsky.transmittedObjects.RequestFromClient;
 
 import java.io.*;
@@ -49,12 +50,20 @@ public class ClientThread extends Thread {
 
             Driver driver = dao.driver();
             if(driver.isActive()){
-                message = Properties.inChain();
-
-                if (!dao.isInChain(requestFromClient.id())) {
-                    dao.addDriverInChain();
-                    canRide = true;
-                    message = Properties.ok();
+                if (requestFromClient.client().equals(Client.entrance)){//todo too big method
+                    message = Properties.inChain();
+                    if (!dao.isInChain(requestFromClient.id())) {
+                        dao.addDriverInChain();
+                        canRide = true;
+                        message = Properties.ok();
+                    }
+                } else {
+                    message = Properties.notInChain();
+                    if (dao.isInChain(requestFromClient.id())) {
+                        dao.removeDriverFromChain(requestFromClient.id());
+                        canRide = true;
+                        message = Properties.ok();
+                    }
                 }
             }
         }
