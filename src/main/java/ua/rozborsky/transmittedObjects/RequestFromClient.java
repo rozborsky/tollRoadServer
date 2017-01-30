@@ -10,7 +10,6 @@ import java.io.Serializable;
 @Service("requestFromClient")
 public class RequestFromClient implements Serializable {
 
-
     private Client client;
     private int id;
 

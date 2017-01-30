@@ -28,37 +28,41 @@ public class ClientThread extends Thread {
             ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
             RequestFromClient requestFromClient = (RequestFromClient)inStream.readObject();
 
-            ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("spring/applicationConfig.xml");
-            DAO dao = (DAO) context.getBean("daoMySQL");
-
-            String message = Properties.notRegistered();
-
-            if (dao.isRegistered(requestFromClient.id())){//todo refactor method
-                message = Properties.blocked();
-
-                Driver driver = dao.driver();
-                if(driver.isActive()){
-                    message = Properties.inChain();
-
-                    if (!dao.isInChain(requestFromClient.id())) {
-                        dao.addDriverInChain();
-                        canRide = true;
-                        message = Properties.ok();
-                    }
-                }
-            }
-            AnswerFromServer answerFromServer = (AnswerFromServer) context.getBean("answerFromServer");
-            answerFromServer.setMessage(message);
-            answerFromServer.setCanRide(canRide);
+            AnswerFromServer answerFromServer = checkId(requestFromClient);
 
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             out.writeObject(answerFromServer);
             out.flush();
-        } catch (IOException | Sql2oException e) {
+        } catch (IOException | Sql2oException | ClassNotFoundException e) {
             log.error(e);//todo if throw this exception - client dosn't work
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
+    }
+
+    private AnswerFromServer checkId(RequestFromClient requestFromClient) {
+        ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("spring/applicationConfig.xml");
+        DAO dao = (DAO) context.getBean("daoMySQL");
+
+        String message = Properties.notRegistered();
+
+        if (dao.isRegistered(requestFromClient.id())){
+            message = Properties.blocked();
+
+            Driver driver = dao.driver();
+            if(driver.isActive()){
+                message = Properties.inChain();
+
+                if (!dao.isInChain(requestFromClient.id())) {
+                    dao.addDriverInChain();
+                    canRide = true;
+                    message = Properties.ok();
+                }
+            }
+        }
+        AnswerFromServer answerFromServer = (AnswerFromServer) context.getBean("answerFromServer");
+        answerFromServer.setMessage(message);
+        answerFromServer.setCanRide(canRide);
+
+        return answerFromServer;
     }
 }
 
