@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.search.StringTerm;
 
 /**
  * Created by roman on 30.01.2017.
@@ -16,6 +17,7 @@ public class SendEmail {
     private String password = Properties.passwordEmail();
     private String subject = Properties.subject();
     private String driverEmail;
+    private String textMessage;
 
     public SendEmail(String eMail) {
         this.driverEmail = eMail;
@@ -39,7 +41,7 @@ public class SendEmail {
             Message message = new MimeMessage(session);
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(this.driverEmail));
             message.setSubject(subject);
-            message.setText(setMessage());
+            message.setText(textMessage);
 
             Transport.send(message);
         } catch (MessagingException e) {
@@ -47,7 +49,7 @@ public class SendEmail {
         }
     }
 
-    private String setMessage() {
-        return Properties.eMailMessage();
+    public void setMessage(String message) {
+        this.textMessage = message;
     }
 }

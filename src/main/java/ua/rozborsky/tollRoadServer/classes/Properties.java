@@ -23,6 +23,10 @@ public class Properties {
         }
     }
 
+    public static double price() {
+        return Double.valueOf(propertie.getProperty("price"));
+    }
+
     public static int port() {
         return Integer.valueOf(propertie.getProperty("port"));
     }
@@ -69,9 +73,5 @@ public class Properties {
 
     public static String subject() {
         return propertie.getProperty("subject");
-    }
-
-    public static String eMailMessage() {
-        return propertie.getProperty("eMailMessage");
     }
 }

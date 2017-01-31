@@ -15,4 +15,6 @@ public interface DAO {
     void removeDriverFromChain(int id);
 
     boolean isInChain(int id);
+
+    int entranceCheckPoint(int id);
 }

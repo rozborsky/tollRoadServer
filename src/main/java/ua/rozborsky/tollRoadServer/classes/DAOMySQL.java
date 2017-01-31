@@ -65,7 +65,7 @@ public class DAOMySQL implements DAO {
 
     @Override
     public boolean isInChain(int id)  throws Sql2oException{
-        String sql = "SELECT * FROM drivers_on_roads WHERE iddrivers_on_roads = :id;";
+        String sql = "SELECT iddrivers_on_roads FROM drivers_on_roads WHERE iddrivers_on_roads = :id;";
 
         try (Connection con = sql2o.open()) {
             List<Integer> idDriver =  con.createQuery(sql)
@@ -73,6 +73,19 @@ public class DAOMySQL implements DAO {
                     .executeScalarList(Integer.class);
 
             return idDriver.size() != 0;
+        }
+    }
+
+    @Override
+    public int entranceCheckPoint(int id)  throws Sql2oException{
+        String sql = "SELECT entranceCheckPoint FROM drivers_on_roads WHERE iddrivers_on_roads = :id;";
+
+        try (Connection con = sql2o.open()) {
+            List<Integer> idDriver =  con.createQuery(sql)
+                    .addParameter("id", id)
+                    .executeScalarList(Integer.class);
+
+            return Integer.valueOf(idDriver.get(0));
         }
     }
 }
